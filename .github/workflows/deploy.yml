@@ -1,3 +1,9 @@
+# Publishes dist/ to GitHub Pages.
+#
+# Requires Pages to be switched on once, under
+# Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+# The workflow cannot do that itself: creating a Pages site needs repo-admin
+# rights, which the built-in GITHUB_TOKEN does not have.
 name: Deploy to GitHub Pages
 
 on:
@@ -34,13 +40,9 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          # Turns Pages on the first time this runs, so the site does not need
-          # to be enabled by hand in the repository settings.
-          enablement: true
-
+      # No actions/configure-pages step: it exists to hand a framework the
+      # site's base path, and vite.config.ts already builds with a relative
+      # base, so the bundle works from any subpath.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
